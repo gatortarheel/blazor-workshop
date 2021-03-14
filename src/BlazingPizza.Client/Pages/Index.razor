@@ -1,16 +1,26 @@
 ﻿@page "/"
-@inject HttpClient HttpClient
-@inject OrderState OrderState
-@inject NavigationManager NavigationManager
-@inject IJSRuntime JS
+@inject HttpClient HttpClient // inject directive newProperty newPropertyName - uses dependency injection
 
+<h1>Custom Wood Working</h1>  
+
+@code {
+    List<PizzaSpecial> specials;
+    List<WoodProduct> portfolio;
+
+    protected override async Task OnInitializedAsync()
+    {
+        specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>("specials");
+
+        portfolio = await HttpClient.GetFromJsonAsync<List<WoodProduct>>("portfolio");
+    }
+}
 <div class="main">
     <ul class="pizza-cards">
         @if (specials != null)
         {
             @foreach (var special in specials)
             {
-                <li @onclick="@(() => OrderState.ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
+                <li style="background-image: url('@special.ImageUrl')">
                     <div class="pizza-info">
                         <span class="title">@special.Name</span>
                         @special.Description
@@ -21,54 +31,21 @@
         }
     </ul>
 </div>
-
-<div class="sidebar">
-    @if (Order.Pizzas.Any())
-    {
-        <div class="order-contents">
-            <h2>Your order</h2>
-
-            @foreach (var configuredPizza in Order.Pizzas)
-            {
-                <ConfiguredPizzaItem Pizza="configuredPizza" OnRemoved="@(() => RemovePizza(configuredPizza))" />
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-cart">Choose a pizza<br>to get started</div>
-    }
-
-    <div class="order-total @(Order.Pizzas.Any() ? "" : "hidden")">
-        Total:
-        <span class="total-price">@Order.GetFormattedTotalPrice()</span>
-        <a href="checkout" class="@(Order.Pizzas.Count == 0 ? "btn btn-warning disabled" : "btn btn-warning")">
-            Order >
-        </a>
-    </div>
-</div>
-
-<TemplatedDialog Show="OrderState.ShowingConfigureDialog">
-    <ConfigurePizzaDialog
-        Pizza="OrderState.ConfiguringPizza"
-        OnCancel="OrderState.CancelConfigurePizzaDialog"
-        OnConfirm="OrderState.ConfirmConfigurePizzaDialog" />
-</TemplatedDialog>
-
-@code {
-    List<PizzaSpecial> specials;
-    Order Order => OrderState.Order;
-
-    protected override async Task OnInitializedAsync()
-    {
-        specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>("specials");
-    }
-
-    async Task RemovePizza(Pizza configuredPizza)
-    {
-        if (await JS.Confirm($"Remove {configuredPizza.Special.Name} pizza from the order?"))
+<hr/>
+<div class="main">
+    <ul class="pizza-cards">
+        @if (specials != null)
         {
-            OrderState.RemoveConfiguredPizza(configuredPizza);
+            @foreach (var product in portfolio)
+            {
+                <li style="background-image: url('@product.ImageUrl')">
+                    <div class="pizza-info">
+                        <span class="title">@product.Name</span>
+                        @product.Description
+                        <span class="price">@product.GetFormattedBasePrice()</span>
+                    </div>
+                </li>
+            }
         }
-    }
-}
+    </ul>
+</div>
