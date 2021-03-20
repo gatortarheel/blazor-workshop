@@ -26,11 +26,13 @@ namespace BlazingPizza.Server
             {
                 Id = 1,
                 BasePrice = 90,
-                Description = "20 x 18 Serving Tray",
+                Description = "Custom Serving Tray",
                 ImageUrl = "https://tarheelstorage2021.blob.core.windows.net/woodworking/servingtray-61.jpg",
-                Name = "Cherry Rope Handle Serving Tray",
+                Name = "Customized Serving Tray",
             };
 
+            servingTray.Customizations = new List<Customization>();
+         
             portfolio.Add(servingTray);
 
             return portfolio;

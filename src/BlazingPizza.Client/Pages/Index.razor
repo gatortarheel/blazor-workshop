@@ -1,11 +1,17 @@
 ﻿@page "/"
 @inject HttpClient HttpClient // inject directive newProperty newPropertyName - uses dependency injection
 
-<h1>Custom Wood Working</h1>  
+<h1>Custom Wood Working</h1>
 
 @code {
     List<PizzaSpecial> specials;
+    Pizza configuringPizza;
+    bool showingConfigureDialog;
+    // Order order = new Order(); // new 
+
     List<WoodProduct> portfolio;
+    WoodProduct configuringProduct;
+    bool showingConfigureProductDialog;
 
     protected override async Task OnInitializedAsync()
     {
@@ -13,36 +19,78 @@
 
         portfolio = await HttpClient.GetFromJsonAsync<List<WoodProduct>>("portfolio");
     }
-}
-<div class="main">
-    <ul class="pizza-cards">
-        @if (specials != null)
+
+    void ShowConfigurePizzaDialog(PizzaSpecial special)
+    {
+        configuringPizza = new Pizza()
         {
-            @foreach (var special in specials)
-            {
-                <li style="background-image: url('@special.ImageUrl')">
-                    <div class="pizza-info">
-                        <span class="title">@special.Name</span>
-                        @special.Description
-                        <span class="price">@special.GetFormattedBasePrice()</span>
-                    </div>
-                </li>
-            }
-        }
-    </ul>
-</div>
-<hr/>
+            Special = special,
+            SpecialId = special.Id,
+            Size = Pizza.DefaultSize,
+            Toppings = new List<PizzaTopping>(),
+        };
+
+        showingConfigureDialog = true;
+    }
+
+    // end pizza functions //
+
+    // start wood product functions //
+
+    void ShowConfigureProductDialog(WoodProduct product)
+    {
+        configuringProduct = new WoodProduct()
+        {
+            Id = product.Id,
+            BasePrice = product.BasePrice,
+            Description = product.Description,
+            ImageUrl = product.ImageUrl,
+            Name = product.Name,
+            Customizations = new List<Customization>(),
+        };
+
+        showingConfigureProductDialog = true;
+    }
+}
+
+@if (showingConfigureDialog)
+{
+    <ConfigurePizzaDialog Pizza="configuringPizza" />
+}
+
+@if (showingConfigureProductDialog)
+{
+    <ConfigureWoodProduct WoodProduct="configuringProduct" />
+}
+
+
 <div class="main">
     <ul class="pizza-cards">
         @if (specials != null)
         {
             @foreach (var product in portfolio)
             {
-                <li style="background-image: url('@product.ImageUrl')">
+                <li @onclick="@(() => ShowConfigureProductDialog(product))" style="background-image: url('@product.ImageUrl')">
                     <div class="pizza-info">
                         <span class="title">@product.Name</span>
                         @product.Description
                         <span class="price">@product.GetFormattedBasePrice()</span>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+
+    <ul class="pizza-cards">
+        @if (specials != null)
+        {
+            @foreach (var special in specials)
+            {
+                <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
+                    <div class="pizza-info">
+                        <span class="title">@special.Name</span>
+                        @special.Description
+                        <span class="price">@special.GetFormattedBasePrice()</span>
                     </div>
                 </li>
             }

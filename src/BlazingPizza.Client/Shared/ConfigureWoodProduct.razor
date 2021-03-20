@@ -1,0 +1,95 @@
+﻿@inject HttpClient HttpClient;
+
+@code {
+    [Parameter] public WoodProduct WoodProduct { get; set; }
+    //List<Topping> toppings;
+    List<Customization> customizations;
+
+    protected async override Task OnInitializedAsync()
+    {
+        customizations = await HttpClient.GetFromJsonAsync<List<Customization>>("customizations");
+    }
+
+    void CustomizationSelected(ChangeEventArgs e)
+    {
+        if (int.TryParse((string)e.Value, out var index) && index >= 0)
+        {
+            AddCustomization(customizations[index]);
+        }
+    }
+
+    void AddCustomization(Customization customization)
+    {
+        //          if (Pizza.Toppings.Find(pt => pt.Topping == topping) == null)
+        if (WoodProduct.Customizations.Find(pt => pt.Id == customization.Id) == null)
+        {
+            WoodProduct.Customizations.Add(customization);
+        }
+    }
+
+    void RemoveCustomization(Customization customization)
+    {
+        WoodProduct.Customizations.Remove(customization);
+    }
+
+}
+
+<div class="dialog-container">
+    <div class="dialog">
+        <div class="dialog-title">
+            <h2>@WoodProduct.Name</h2>
+            @WoodProduct.Description
+            <h4>Width: 18"</h4>
+        </div>
+        <form class="dialog-body">
+            <div>
+                <label>Custom Length:</label>
+                <input type="range" min="@WoodProduct.MinimumLength" max="@WoodProduct.MaximumLength" step="1" @bind="WoodProduct.Length" @bind:event="oninput" />
+                <span class="size-label">
+                    @(WoodProduct.Length)" ($@(WoodProduct.GetFormattedTotalPrice()))
+                </span>
+            </div>
+            <div>
+                <label>Customizations:</label>
+                @if (customizations == null)
+                {
+                    <select class="custom-select" disabled>
+                        <option>(loading...)</option>
+                    </select>
+                }
+                else if (WoodProduct.Customizations.Count >= 3)
+                {
+                    <div>(maximum reached)</div>
+                }
+                else
+                {
+                    <select class="custom-select" @onchange="CustomizationSelected">
+                        <option value="-1" disabled selected>(select)</option>
+                        @for (var i = 0; i < customizations.Count; i++)
+                        {
+                            <option value="@i">@customizations[i].Name - ($@(customizations[i].GetFormattedPrice()))</option>
+                        }
+                    </select>
+                }
+            </div>
+
+            <div class="toppings">
+                @foreach (var customization in WoodProduct.Customizations)
+                {
+                    <div class="topping">
+                        @customization.Name
+                        <span class="topping-price">@customization.GetFormattedPrice()</span>
+                        <button type="button" class="delete-topping" @onclick="@(() => RemoveCustomization(customization))">x</button>
+                    </div>
+                }
+            </div>
+        </form>
+        <div class="dialog-buttons">
+            <button class="btn btn-secondary mr-auto">Cancel</button>
+            <span class="mr-center">
+                Price: <span class="price">@(WoodProduct.GetFormattedTotalPrice())</span>
+            </span>
+            <button class="btn btn-success ml-auto">Order ></button>
+        </div>
+    </div>
+</div>
