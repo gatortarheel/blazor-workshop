@@ -2,6 +2,9 @@
 
 @code {
     [Parameter] public WoodProduct WoodProduct { get; set; }
+    [Parameter] public EventCallback OnCancelWood { get; set; }
+    [Parameter] public EventCallback OnConfirmWood { get; set; }
+
     //List<Topping> toppings;
     List<Customization> customizations;
 
@@ -85,11 +88,11 @@
             </div>
         </form>
         <div class="dialog-buttons">
-            <button class="btn btn-secondary mr-auto">Cancel</button>
+            <button class="btn btn-secondary mr-auto" @onclick="OnCancelWood">Cancel</button>
             <span class="mr-center">
                 Price: <span class="price">@(WoodProduct.GetFormattedTotalPrice())</span>
             </span>
-            <button class="btn btn-success ml-auto">Order ></button>
+            <button class="btn btn-success ml-auto"  @onclick="OnConfirmWood">Order</button>
         </div>
     </div>
 </div>
