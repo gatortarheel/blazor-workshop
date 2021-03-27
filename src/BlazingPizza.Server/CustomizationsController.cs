@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlazingPizza.Server
 {
@@ -26,58 +24,52 @@ namespace BlazingPizza.Server
         public async Task<ActionResult<List<Customization>>> GetCustomizations()
         {
             List<Customization> customizations = new List<Customization>();
-
-            Customization cherry = new Customization
-            {
-                Price = 0,
-                Name = "Cherry Wood",
-                Id = 1
-            };
-
-            Customization walnut = new Customization
-            {
-                Price = 5,
-                Name = "Add Walnut Wood",
-                Id = 2
-            };
-
-            Customization PurpleHeart = new Customization
-            {
-                Price = 5,
-                Name = "Add Purple Heart Featuress",
-                Id = 3
-            };
-
-            Customization engraving = new Customization
-            {
-                Price = 5,
-                Name = "Add Personalized Engraving",
-                Id = 4
-            };
-
-            Customization ropeHandle = new Customization
-            {
-                Price = 5,
-                Name = "Add Rope Handle",
-                Id = 5
-            };
-
-            Customization similarToPortfolio = new Customization
-            {
-                Price = 0,
-                Name = "Make Similar to Portfolio Photo",
-                Id = 6
-            };
-            customizations.Add(cherry);
-            customizations.Add(walnut);
-            customizations.Add(PurpleHeart);
-            customizations.Add(engraving);
-            customizations.Add(ropeHandle);
-            customizations.Add(similarToPortfolio);
+            customizations.AddRange(new List<Customization> {
+               new Customization
+               {
+                   Price = 0,
+                   Name = "Cherry Wood",
+                   Id = 1
+               },
+               new Customization
+               {
+                   Price = 0,
+                   Name = "Walnut Wood",
+                   Id = 2
+               },
+                 new Customization
+                {
+                    Price = 0,
+                    Name = "Maple Wood",
+                    Id = 3
+                },
+               new Customization
+               {
+                   Price = 0,
+                   Name = "Ambrosia Maple Wood",
+                   Id = 4
+               },
+                new Customization
+                {
+                    Price = 0,
+                    Name = "Oak Wood",
+                    Id = 5
+                },
+                 new Customization
+                 {
+                     Price = 0,
+                     Name = "Purple Heart Accent",
+                     Id = 6
+                 },
+                 new Customization
+                 {
+                     Price = 0,
+                     Name = "Make Similar to Portfolio Photo",
+                     Id = 7
+                 }}
+               );
 
             return customizations;
-
-            //return await _db.Toppings.OrderBy(t => t.Name).ToListAsync();
         }
     }
 }

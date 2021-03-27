@@ -1,0 +1,18 @@
+﻿<div class="cart-item">
+    <a @onclick="OnRemoved" class="delete-item">x</a>
+    <div class="title">18 x @(WoodProduct.Length)" @WoodProduct.Name</div>
+    <ul>
+        @foreach (var customization in WoodProduct.Customizations)
+        {
+            <li>+ @customization.Name</li>
+        }
+    </ul>
+    <div class="item-price">
+        @WoodProduct.GetFormattedTotalPrice()
+    </div>
+</div>
+
+@code {
+    [Parameter] public WoodProduct WoodProduct { get; set; }
+    [Parameter] public EventCallback OnRemoved { get; set; }
+}

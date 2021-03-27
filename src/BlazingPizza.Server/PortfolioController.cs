@@ -25,10 +25,11 @@ namespace BlazingPizza.Server
             WoodProduct servingTray = new WoodProduct
             {
                 Id = 1,
-                BasePrice = 90,
-                Description = "Custom Serving Tray",
+                BasePrice = 150,
+                Description = "Live Edge Serving Trays", 
+                LongDescription = "Made of three primary pieces from five woods: walnut, cherry, oak, maple, and ambrosia maple.",//  Accent strips such as Purpleheart, Paduk can be added between each section.  Rope handles are added for easy carrying.",
                 ImageUrl = "https://tarheelstorage2021.blob.core.windows.net/woodworking/servingtray-61.jpg",
-                Name = "Customized Serving Tray",
+                Name = "Live Edge Serving Tray",
             };
 
             servingTray.Customizations = new List<Customization>();

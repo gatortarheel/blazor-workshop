@@ -7,12 +7,11 @@
     List<PizzaSpecial> specials;
     Pizza configuringPizza;
     bool showingConfigureDialog;
-    Order order = new Order(); // new 
+    Order order = new Order();
 
     List<WoodProduct> portfolio;
     WoodProduct configuringProduct;
     bool showingConfigureProductDialog;
-    ProductOrder productOrder = new ProductOrder();
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,9 +46,19 @@
         showingConfigureDialog = false;
     }
 
+    void RemoveConfiguredPizza(Pizza pizza)
+    {
+        order.Pizzas.Remove(pizza);
+    }
+
     // end pizza functions //
 
     // start wood product functions //
+    void RemoveConfiguredProduct(WoodProduct product)
+    {
+        order.WoodProducts.Remove(product);
+    }
+
 
     void CancelConfigureProductDialog()
     {
@@ -59,9 +68,9 @@
 
     void ConfirmConfigureProductDialog()
     {
-        productOrder.WoodProducts.Add(configuringProduct);
+        order.WoodProducts.Add(configuringProduct);
         configuringProduct = null;
-        showingConfigureDialog = false;
+        showingConfigureProductDialog = false;
     }
 
     void ShowConfigureProductDialog(WoodProduct product)
@@ -74,15 +83,15 @@
             ImageUrl = product.ImageUrl,
             Name = product.Name,
             Customizations = new List<Customization>(),
+            Length = 18
         };
 
         showingConfigureProductDialog = true;
     }
 
-    void RemoveConfiguredPizza(Pizza pizza)
-    {
-        order.Pizzas.Remove(pizza);
-    }
+
+
+
 
     async Task PlaceOrder()
     {
@@ -96,9 +105,10 @@
     <ConfigurePizzaDialog Pizza="configuringPizza" OnCancel="CancelConfigurePizzaDialog" OnConfirm="ConfirmConfigurePizzaDialog" />
 }
 
+<!-- theory this dialog needs its own method attempting for OnCancel-->
 @if (showingConfigureProductDialog)
 {
-    <ConfigureWoodProduct WoodProduct="configuringProduct" OnCancelWood="CancelConfigureProductDialog" OnConfirmWood="ConfirmConfigureProductDialog"/>
+    <ConfigureProductDialog WoodProduct="configuringProduct" OnCancelProduct="CancelConfigureProductDialog" OnConfirmProduct="ConfirmConfigureProductDialog" />
 }
 
 
@@ -119,21 +129,23 @@
         }
     </ul>
 
-    <ul class="pizza-cards">
-        @if (specials != null)
-        {
-            @foreach (var special in specials)
+    <div style="visibility:hidden">
+        <ul class="pizza-cards">
+            @if (specials != null)
             {
-                <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
-                    <div class="pizza-info">
-                        <span class="title">@special.Name</span>
-                        @special.Description
-                        <span class="price">@special.GetFormattedBasePrice()</span>
-                    </div>
-                </li>
+                @foreach (var special in specials)
+                {
+                    <li @onclick="@(() => ShowConfigurePizzaDialog(special))" style="background-image: url('@special.ImageUrl')">
+                        <div class="pizza-info">
+                            <span class="title">@special.Name</span>
+                            @special.Description
+                            <span class="price">@special.GetFormattedBasePrice()</span>
+                        </div>
+                    </li>
+                }
             }
-        }
-    </ul>
+        </ul>
+    </div>
 </div>
 <div class="sidebar">
     @if (order.Pizzas.Any())
@@ -149,14 +161,30 @@
     }
     else
     {
-        <div class="empty-cart">Choose a pizza<br>to get started</div>
+        <div class="empty-cart"></div>
     }
 
-    <div class="order-total @(order.Pizzas.Any() ? "" : "hidden")">
+    @if (order.WoodProducts.Any())
+    {
+        <div class="order-contents">
+
+            @foreach (var configuredProduct in order.WoodProducts)
+            {
+                <ConfiguredProductItem WoodProduct="configuredProduct" OnRemoved="@(() => RemoveConfiguredProduct(configuredProduct))" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart">empty</div>
+    }
+
+    <div class="order-total @(order.WoodProducts.Any() ? "" : "hidden")">
         Total:
         <span class="total-price">@order.GetFormattedTotalPrice()</span>
-        <button class="btn btn-warning" disabled="@(order.Pizzas.Count == 0)" @onclick="PlaceOrder">
+        <button class="btn btn-warning" disabled="@(order.WoodProducts.Count == 0)" @onclick="PlaceOrder">
             Order >
         </button>
     </div>
 </div>
+

@@ -2,10 +2,9 @@
 
 @code {
     [Parameter] public WoodProduct WoodProduct { get; set; }
-    [Parameter] public EventCallback OnCancelWood { get; set; }
-    [Parameter] public EventCallback OnConfirmWood { get; set; }
+    [Parameter] public EventCallback OnCancelProduct { get; set; }
+    [Parameter] public EventCallback OnConfirmProduct { get; set; }
 
-    //List<Topping> toppings;
     List<Customization> customizations;
 
     protected async override Task OnInitializedAsync()
@@ -23,7 +22,6 @@
 
     void AddCustomization(Customization customization)
     {
-        //          if (Pizza.Toppings.Find(pt => pt.Topping == topping) == null)
         if (WoodProduct.Customizations.Find(pt => pt.Id == customization.Id) == null)
         {
             WoodProduct.Customizations.Add(customization);
@@ -42,15 +40,15 @@
         <div class="dialog-title">
             <h2>@WoodProduct.Name</h2>
             @WoodProduct.Description
-            <h4>Width: 18"</h4>
+            <h4>Size: 18" x 24"</h4>
         </div>
         <form class="dialog-body">
             <div>
-                <label>Custom Length:</label>
+                <!--<label>Custom Length:</label>
                 <input type="range" min="@WoodProduct.MinimumLength" max="@WoodProduct.MaximumLength" step="1" @bind="WoodProduct.Length" @bind:event="oninput" />
                 <span class="size-label">
                     @(WoodProduct.Length)" ($@(WoodProduct.GetFormattedTotalPrice()))
-                </span>
+                </span>-->
             </div>
             <div>
                 <label>Customizations:</label>
@@ -88,11 +86,11 @@
             </div>
         </form>
         <div class="dialog-buttons">
-            <button class="btn btn-secondary mr-auto" @onclick="OnCancelWood">Cancel</button>
+            <button class="btn btn-secondary mr-auto" @onclick="OnCancelProduct">Cancel</button>
             <span class="mr-center">
                 Price: <span class="price">@(WoodProduct.GetFormattedTotalPrice())</span>
             </span>
-            <button class="btn btn-success ml-auto"  @onclick="OnConfirmWood">Order</button>
+            <button class="btn btn-success ml-auto" @onclick="OnConfirmProduct">Order</button>
         </div>
     </div>
 </div>

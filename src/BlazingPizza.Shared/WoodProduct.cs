@@ -21,6 +21,8 @@ namespace BlazingPizza
 
         public string Description { get; set; }
 
+        public string? LongDescription { get; set; }
+
         public string ImageUrl { get; set; }
 
         public List<Customization> Customizations { get; set; }
@@ -29,7 +31,7 @@ namespace BlazingPizza
 
         public decimal GetBasePrice()
         {
-            decimal customSize = (Length - MinimumLength) * 5;
+            decimal customSize = 0;// (Length - MinimumLength) * 5;
             return BasePrice + customSize;
         }
 
@@ -38,7 +40,7 @@ namespace BlazingPizza
             decimal addOns = 0;
             if(Customizations != null)
             {
-                addOns = Customizations.Sum(t => t.Price);
+                // addOns = Customizations.Sum(t => t.Price);
             }
             return GetBasePrice() + addOns;
         }

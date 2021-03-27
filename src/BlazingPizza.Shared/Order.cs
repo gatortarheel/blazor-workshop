@@ -18,7 +18,9 @@ namespace BlazingPizza
 
         public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
 
-        public decimal GetTotalPrice() => Pizzas.Sum(p => p.GetTotalPrice());
+        public List<WoodProduct> WoodProducts { get; set; } = new List<WoodProduct>();
+
+        public decimal GetTotalPrice() => WoodProducts.Sum(p => p.GetTotalPrice());
 
         public string GetFormattedTotalPrice() => GetTotalPrice().ToString("0.00");
     }

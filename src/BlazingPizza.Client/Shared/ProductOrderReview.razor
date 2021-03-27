@@ -1,0 +1,28 @@
+﻿@foreach (var woodProduct in Order.WoodProducts)
+{
+    <p>
+        <strong>
+            Size 18 x @(woodProduct.Length)"
+            @woodProduct.Name
+            ($@woodProduct.GetFormattedTotalPrice())
+        </strong>
+    </p>
+
+    <ul>
+        @foreach (var customization in woodProduct.Customizations)
+        {
+            <li>+ @customization.Name</li>
+        }
+    </ul>
+}
+
+<p>
+    <strong>
+        Total price:
+        $@Order.GetFormattedTotalPrice()
+    </strong>
+</p>
+
+@code {
+    [Parameter] public Order Order { get; set; }
+}
